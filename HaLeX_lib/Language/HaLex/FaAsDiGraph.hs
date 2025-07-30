@@ -77,7 +77,7 @@ tographviz' :: (Eq sy, Show sy, Ord st, Show st)
         -> Bool                  -- ^ Show sync states?
         -> [Char]
 tographviz' ndfa@(Ndfa v q s z delta) name shape orientation 
-           showState showLabel deadSt syncSt = "digraph " ++ name ++ " {\n " 
+           showState showLabel deadSt syncSt = "digraph \"" ++ name ++ "\" {\n " 
              ++ "rankdir = " ++ orientation ++ " ;\n " 
              ++ (showElemsListPerLine (showStates q)) ++ "\n " 
              ++ (showElemsListPerLine (showInitialStates s)) ++ "\n " 

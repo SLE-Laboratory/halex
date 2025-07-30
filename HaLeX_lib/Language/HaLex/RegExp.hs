@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Language.HaLex.RegExp
@@ -32,6 +35,10 @@ module Language.HaLex.RegExp (
               , extREtoRE
               ) where
 
+import Data.Data (Data)
+import Data.Typeable (Typeable)
+
+
 -----------------------------------------------------------------------------
 -- * Data type with recursion pattern
 
@@ -45,7 +52,7 @@ data RegExp sy  = Empty                              -- ^ Empty Language
                 | OneOrMore (RegExp sy)              -- ^ One or more times (extended RegExp)
                 | Optional  (RegExp sy)              -- ^ Optional (extended RegExp)
                 | RESet     [sy]                     -- ^ Set (extended RegExp)
-   deriving (Read, Eq)
+   deriving (Read, Eq, Data, Typeable)
    
 -- | Catamorphism induced by the 'RegExp' inductive data type
 
