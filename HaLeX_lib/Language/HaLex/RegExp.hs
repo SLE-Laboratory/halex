@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Language.HaLex.RegExp
--- Copyright   :  (c) João Saraiva 2001,2002,2003,2004,2005,2017
+-- Copyright   :  (c) João Saraiva 2001,2002,2003,2004,2005,2017,2025
 -- License     :  LGPL
 -- 
 -- Maintainer  :  jas@di.uminho.pt
@@ -83,8 +83,8 @@ matchesRE :: Eq sy
           -> [sy]              -- ^ Input Symbols
           -> Bool
 matchesRE Empty inp          = False
-matchesRE Epsilon inp        = inp == []
-matchesRE (Literal l) inp    = ([l] == inp)
+matchesRE Epsilon inp        = null inp 
+matchesRE (Literal l) inp    = [l] == inp
 matchesRE (Or re1 re2) inp   = matchesRE re1 inp || matchesRE re2 inp 
 matchesRE (Then re1 re2) inp = or [ matchesRE re1 s1 && matchesRE re2 s2 
                                   | (s1,s2) <- splits inp]

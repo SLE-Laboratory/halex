@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Language.HaLex.FaOperations
--- Copyright   :  (c) Joãoo Saraiva 2001,2002,2003,2004,2005,2017
+-- Copyright   :  (c) João Saraiva 2001,2002,2003,2004,2005,2017,2025
 -- License     :  LGPL
 --
 -- Maintainer  :  saraiva@di.uminho.pt
@@ -53,11 +53,17 @@ type StDfa st = [st]
 -- | A transition table will be used to transform a 'Ndfa' into a 'Dfa'
 --
 
-type CT st =  TableDfa (StDfa st)       -- [( StDfa st, [StDfa st])]
+--type CT st =  TableDfa (StDfa st)       -- [( StDfa st, [StDfa st])]
 
+type CT st = [( StDfa st, [StDfa st])]
+stsDfa :: CT st -> [StDfa st]
 stsDfa   = map fst
+
+stsRHS :: CT st -> [[StDfa st]]
 stsRHS   = map snd
-allstsCT = concat . stsRHS
+
+allstsCT :: Eq st => CT st -> [StDfa st]
+allstsCT = nub . concat . stsRHS
 
 
 
@@ -77,9 +83,9 @@ ndfa2dfa ndfa@(Ndfa v q s z delta)  = (Dfa v' q' s' z' delta')
 
 
 finalStatesDfa :: Eq st => [StDfa st] -> [st] -> [StDfa st]
-finalStatesDfa []     z = []
-finalStatesDfa (q:qs) z | (q `intersect` z /= []) = q : finalStatesDfa qs z
-                        | otherwise               = finalStatesDfa qs z
+finalStatesDfa []     _ = []
+finalStatesDfa (q:qs) z | (not . null) (q `intersect` z)   = q : finalStatesDfa qs z
+                        | otherwise                        = finalStatesDfa qs z
 
 
 -- | Lookup the Transition Table 'CT' of a the resulting 'Dfa'
@@ -103,22 +109,20 @@ ndfa2ct :: Ord st
         => Ndfa st sy             -- ^ Nondterminitic Finite Automaton
         -> CT st                  -- ^ Transition Table
 ndfa2ct (Ndfa v q s z delta) = limit (ndfa2dfaStep delta v) ttFstRow
-  where  ttFstRow = consRows delta [epsilon_closure delta s] v
+  where  ttFstRow = newRows delta [epsilon_closure delta s] v
 
 
 ndfa2dfaStep :: Ord st => (st -> (Maybe sy) -> [st]) -> [sy] -> CT st -> CT st
-ndfa2dfaStep delta alfabet ct = nub (ct `union` consRows delta newSts alfabet)
-  where newSts =  ((nub . allstsCT) ct) <-> (stsDfa ct)
+ndfa2dfaStep delta alfabet ct = nub (ct `union` newRows delta newSts alfabet)
+  where newSts =  (allstsCT ct) <-> (stsDfa ct)
 
 
-consRows :: Ord st => (st -> (Maybe sy) -> [st]) -> [StDfa st] -> [sy] -> CT st
-consRows delta []     alfabet = []
-consRows delta (q:qs) alfabet = (q , oneRow delta q alfabet) :
-                                (consRows delta qs alfabet)
+newRows :: Ord st => (st -> (Maybe sy) -> [st]) -> [StDfa st] -> [sy] -> CT st
+newRows delta sts alfabet = map (\ st -> (st, newRow delta st alfabet)) sts
 
 
-oneRow :: Ord st => (st -> (Maybe sy) -> [st]) -> (StDfa st) -> [sy] -> [StDfa st]
-oneRow delta sts alfabet = map (\ v -> sort (ndfawalk delta sts [v])) alfabet
+newRow :: Ord st => (st -> (Maybe sy) -> [st]) -> (StDfa st) -> [sy] -> [StDfa st]
+newRow delta sts alfabet = map (\ v -> sort (ndfawalk delta sts [v])) alfabet
 
 
 
@@ -134,11 +138,11 @@ ndfa2ctstep' :: Ord st
 ndfa2ctstep' delta v ct []       done = (ct  , done )
 ndfa2ctstep' delta v ct (st:sts) done = (ct'' , done'')
     where   done'  = st : done
-            newRow = (st , oneRow delta st v)
-            ct'    = newRow : ct
-            newSts =  (snd newRow) <-> done'
+            newRow' = (st , newRow delta st v)
+            ct'    = newRow' : ct
+            newSts =  (snd newRow') <-> done'
             worker = sts ++ newSts
-            (ct'' , done'' ) = ndfa2ctstep' delta v ct' worker done' 
+            (ct'' , done'' ) = ndfa2ctstep' delta v ct' worker done'
 
 
 -- | Making a 'Ndfa' from a 'Dfa'

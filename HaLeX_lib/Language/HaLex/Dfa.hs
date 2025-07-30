@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Language.HaLex.Dfa
--- Copyright   :  (c) Joãoo Saraiva 2001,2002,2003,2004,2005,2017
+-- Copyright   :  (c) João Saraiva 2001,2002,2003,2004,2005,2017
 -- License     :  LGPL
 --
 -- Maintainer  :  jas@di.uminho.pt
@@ -42,11 +42,11 @@ module Language.HaLex.Dfa (
               , dfaIO
               -- * Properties of 'Dfa'
               , sizeDfa
-	      , nodesAndEdgesDfa
-	      , nodesAndEdgesNoSyncDfa
+              , nodesAndEdgesDfa
+              , nodesAndEdgesNoSyncDfa
               , dfadeadstates
               , dfasyncstates
-	      , cyclomaticDfa
+              , cyclomaticDfa
               -- * Properties of States
               , isStDead
               , isStSync
