@@ -58,7 +58,7 @@ test_size_fa ndfa =  TestList [ sizeFa dfa_min <= sizeFa dfa  ~?= True
 test_gen_sentences :: (Ord sy, Show sy) => RegExp sy -> Test
 
 test_gen_sentences re =
-    TestList [ and (map (matches'     re)  sentences_re) ~?= True
+    TestList [ and (map (matches      re)  sentences_re) ~?= True
              , and (map (accept     ndfa)  sentences_re) ~?= True
              , and (map (accept      dfa)  sentences_re) ~?= True
              , and (map (accept  dfa_min)  sentences_re) ~?= True
