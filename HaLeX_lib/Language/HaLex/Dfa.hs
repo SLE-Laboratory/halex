@@ -28,6 +28,7 @@ module Language.HaLex.Dfa (
               , ttAllDestSts
               , ttDfa2Dfa
               , dfa2tdfa
+              , complementDfa
               -- * Transitions
               , transitionsFromTo
               , destinationsFrom
@@ -357,6 +358,16 @@ newRows delta qs alfabet = map (\ st -> (st, newRow delta st alfabet)) qs
 
 newRow :: (st -> sy -> st) -> st -> [sy] -> [st]
 newRow delta st alfabet = map (delta st) alfabet
+
+
+-- | Complement of a 'Dfa'
+
+
+complementDfa :: Eq st
+              => Dfa st sy               -- ^ Original 'Dfa'
+              -> Dfa st sy               -- ^ Resulting 'Dfa'
+complementDfa (Dfa v qs s z delta) = Dfa v qs s (qs <-> z) delta
+  
 
 
 -- | Renames a 'Dfa'.
