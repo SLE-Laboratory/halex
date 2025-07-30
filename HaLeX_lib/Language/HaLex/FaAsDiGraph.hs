@@ -20,9 +20,9 @@ module Language.HaLex.FaAsDiGraph (
                     , dfa2graphviz
                     , dfa2graphviz2file
                     , tographviz
-                    , tographviz'		    
+                    , tographviz'
                     , tographvizIO
-		    , tographvizIO'
+                    , tographvizIO'
                     , dfa2DiGraphWithNoSyncSt
                     , dfaDiGraphWithNoSyncStIO
                     , genOneArrow
@@ -127,11 +127,11 @@ tographviz' ndfa@(Ndfa v q s z delta) name shape orientation
 -- | Show the arrows between nodes (states) induced by the 'Ndfa' transitions.
 showNdfaArrows :: (Ord st,Show st,Show sy,Eq sy)
                => Ndfa st sy         -- ^ Automaton
-	       -> (st -> String)     -- ^ Show function to print the state ids
-	       -> (sy -> String)     -- ^ Show function to print the labels
-	       -> Bool               -- ^ Show dead states?
-	       -> Bool               -- ^ Show sync states?
-	       -> [String]
+               -> (st -> String)     -- ^ Show function to print the state ids
+               -> (sy -> String)     -- ^ Show function to print the labels
+               -> Bool               -- ^ Show dead states?
+               -> Bool               -- ^ Show sync states?
+               -> [String]
 showNdfaArrows ndfa@(Ndfa v q s z delta) showState showLabel deadSt syncSt = 
      map (\ (o,l,d) -> if deadSt then  if (not syncSt) && (ndfaIsSyncState delta v z o) || (ndfaIsSyncState delta v z d)  then ""
                                           else  genOneArrow (showState o) (showLabels showLabel l) (showState d) 

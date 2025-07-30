@@ -338,10 +338,10 @@ nodesAndEdgesNoSyncNdfa ndfa@(Ndfa _ q _ _ _) = (length states , length tt')
     where tt      = transitionTableNdfa ndfa
           syncSts = ndfasyncstates ndfa
           deadSts = ndfadeadstates ndfa
-          states  = filter (\ st -> not $((st `elem` syncSts) ||
+          states  = filter (\ st -> not  ((st `elem` syncSts) ||
                                           (st `elem` deadSts))) q
           tt'     = filter (\ (_ , _ , d) ->
-                       not $ (d `elem` syncSts) || (d `elem` deadSts)) tt
+                       not (d `elem` syncSts) || (d `elem` deadSts)) tt
 
 
 -- | Compute the cyclomatic complexity of a 'Dfa'

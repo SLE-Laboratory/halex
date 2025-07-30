@@ -24,7 +24,7 @@ module Language.HaLex.RegExp (
               , cataRegExp
               -- * Matching
               , matchesRE
-              , matches'
+              , matches
               -- * Size
               , sizeRegExp
               -- * Printing
@@ -83,7 +83,8 @@ cataRegExp (empty,epsilon,or,star,lit,th,one,opt,set) = cata
 
 -- | Test whether a match can be found for the given regular expression
 --   in the given sequence of characters. The regular expression is
---   assumed not to contain 'OneOrMore' or 'Optional'. See also @matches'@.
+--   assumed not to contain 'OneOrMore', nor 'Optional', nor 'RESet'. 
+--   See also @matches@.
 
 matchesRE :: Eq sy 
           => RegExp sy         -- ^ (canonical) Regular Expression
@@ -103,11 +104,11 @@ matchesRE (Star re) inp      = matchesRE Epsilon inp ||
 --   in the given sequence of characters. The regular expression is
 --   allowed to contain 'OneOrMore' or 'Optional'.
 
-matches' :: Eq sy 
+matches  :: Eq sy 
          => RegExp sy          -- ^ Regular Expression 
          -> [sy]               -- ^ Input Symbols
          -> Bool
-matches' = matchesRE . extREtoRE
+matches  = matchesRE . extREtoRE
 
 -- | Produce a list of all possible ways of splitting the input list
 --   into two parts. For instance, 

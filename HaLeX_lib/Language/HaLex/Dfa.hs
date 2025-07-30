@@ -139,13 +139,13 @@ showDfaDelta q v d = foldr (.) (showChar '\n') f
     q'    = map (uncurry d) l
     l     = [(a,b) | a <- q , b <- v]
 
-    showF st sy st' = showString("\t delta ") .
+    showF st sy st' = showString ("\t delta ") .
                       shows st .
-                      showChar(' ') .
+                      showChar (' ') .
                       shows sy .
-                      showString(" = ") .
+                      showString (" = ") .
                       shows st' .
-                      showChar('\n')
+                      showChar ('\n')
 
 
 -- | Write a 'Dfa' to a Haskell module in a file.
@@ -190,7 +190,7 @@ destinationsFrom delta vs o = [ delta o v | v <- vs ]
 -- | Compute the states that can be reached from a state
 --   according to a given transition function and vocabulary
 
-reachedStatesFrom :: (Eq [st], Ord st)
+reachedStatesFrom :: (Eq st, Ord st)
                   => (st -> sy -> st)       -- ^ Transition function
                   -> [sy]                   -- ^ Vocabulary
                   -> st                     -- ^ Origin
@@ -235,12 +235,12 @@ transitionTableDfa (Dfa v q s z delta) = sort [ ( aq , av , delta aq av)
 -- defining all the transitions of the 'Dfa'.
 --
 
-transitionTableDfa' :: (Ord st, Ord sy) 
+transitionTableDfa' :: (Ord st, Ord sy)
                     => Dfa st sy          -- ^ Automaton
                     -> [(st,[st])]        -- ^ Transition table
 
-transitionTableDfa' (Dfa v q s z delta) = sort [ ( aq , map (delta aq) v )  
-                                               | aq <- q 
+transitionTableDfa' (Dfa v q s z delta) = sort [ ( aq , map (delta aq) v )
+                                               | aq <- q
                                                ]
 
 
@@ -339,7 +339,7 @@ dfa2tdfa :: (Eq st, Ord sy)
          -> TableDfa st            -- ^ Transition table
 dfa2tdfa (Dfa v q s z delta) = limit (dfa2tdfaStep delta v') tbFstRow
   where v'       = sort v
-        tbFstRow = consRows delta [s] v'
+        tbFstRow = newRows delta [s] v'
 
 -- | Add rows to a table-based Dfa, given a Dfa transition function
 --   and its vocabulary.
@@ -348,18 +348,15 @@ dfa2tdfaStep :: Eq st
              -> [sy]              -- ^ Vocabulary
              -> TableDfa st       -- ^ Table-based Dfa
              -> TableDfa st       -- ^ Table-based Dfa with additional rows.
-dfa2tdfaStep delta alfabet tb = tb `union` (consRows delta newSts alfabet)
+dfa2tdfaStep delta alfabet tb = tb `union` (newRows delta newSts alfabet)
   where newSts = (ttAllDestSts tb) <-> (ttAllSts tb)
 
 
+newRows :: (st -> sy -> st) -> [st] -> [sy] -> TableDfa st
+newRows delta qs alfabet = map (\ st -> (st, newRow delta st alfabet)) qs
 
-consRows :: (st -> sy -> st) -> [st] -> [sy] -> TableDfa st
-consRows delta []     alfabet = []
-consRows delta (q:qs) alfabet = (q , oneRow delta q alfabet) :
-                                (consRows delta qs alfabet)
-
-oneRow :: (st -> sy -> st) -> st -> [sy] -> [st]
-oneRow delta st alfabet = map (delta st) alfabet
+newRow :: (st -> sy -> st) -> st -> [sy] -> [st]
+newRow delta st alfabet = map (delta st) alfabet
 
 
 -- | Renames a 'Dfa'.
@@ -467,11 +464,11 @@ nodesAndEdgesNoSyncDfa :: (Eq st , Ord st , Ord sy)
 nodesAndEdgesNoSyncDfa dfa@(Dfa _ q _ _ _) = (length states , length tt')
     where tt      = transitionTableDfa dfa
           syncSts = dfasyncstates dfa
-	  deadSts = dfadeadstates dfa
-	  states  = filter (\ st -> not $((st `elem` syncSts) ||
-	                                  (st `elem` deadSts))) q
+          deadSts = dfadeadstates dfa
+          states  = filter (\ st -> not  ((st `elem` syncSts) ||
+                                          (st `elem` deadSts))) q
           tt'     = filter (\ (_ , _ , d) ->
-	              not $ (d `elem` syncSts) || (d `elem` deadSts)) tt
+                      not (d `elem` syncSts) || (d `elem` deadSts)) tt
 
 
 -- | Compute the cyclomatic complexity of a 'Dfa'
@@ -484,9 +481,9 @@ nodesAndEdgesNoSyncDfa dfa@(Dfa _ q _ _ _) = (length states , length tt')
 
 cyclomaticDfa :: (Ord st , Ord sy)
               => Dfa st sy -> Int
-cyclomaticDfa dfa = e - n + 2 * p 
+cyclomaticDfa dfa = e - n + 2 * p
   where (n , e) =  nodesAndEdgesNoSyncDfa dfa
-        p = 1                             
+        p = 1
 
 -----------------------------------------------------------------------------
 -- * Properties of States
