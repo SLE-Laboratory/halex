@@ -53,17 +53,16 @@ type StDfa st = [st]
 -- | A transition table will be used to transform a 'Ndfa' into a 'Dfa'
 --
 
---type CT st =  TableDfa (StDfa st)       -- [( StDfa st, [StDfa st])]
+type CT st =  TableDfa (StDfa st)       -- [( StDfa st, [StDfa st])]
 
-type CT st = [( StDfa st, [StDfa st])]
 stsDfa :: CT st -> [StDfa st]
 stsDfa   = map fst
 
 stsRHS :: CT st -> [[StDfa st]]
 stsRHS   = map snd
 
-allstsCT :: Eq st => CT st -> [StDfa st]
-allstsCT = nub . concat . stsRHS
+allSts :: Eq st => CT st -> [StDfa st]
+allSts = nub . concat . stsRHS
 
 
 
@@ -114,7 +113,7 @@ ndfa2ct (Ndfa v q s z delta) = limit (ndfa2dfaStep delta v) ttFstRow
 
 ndfa2dfaStep :: Ord st => (st -> (Maybe sy) -> [st]) -> [sy] -> CT st -> CT st
 ndfa2dfaStep delta alfabet ct = nub (ct `union` newRows delta newSts alfabet)
-  where newSts =  (allstsCT ct) <-> (stsDfa ct)
+  where newSts =  (allSts ct) <-> (stsDfa ct)
 
 
 newRows :: Ord st => (st -> (Maybe sy) -> [st]) -> [StDfa st] -> [sy] -> CT st
