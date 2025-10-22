@@ -95,10 +95,10 @@ regular d v i j k  =  Or (Then (Then (regular d v i k (k-1))
 
 -- | Compute a regular expression from a 'Dfa'.
 
-dfa2RegExp :: Eq sy
-           => Dfa Int sy            -- ^ Deterministic Automaton
-           -> RegExp sy             -- ^ Equivalent Regular Expression
-dfa2RegExp dfa@(Dfa v q s z delta) =
+--dfa2RegExp :: Eq sy
+--           => Dfa Int sy            -- ^ Deterministic Automaton
+--           -> RegExp sy             -- ^ Equivalent Regular Expression
+dfa2RegExp dfa@(Dfa v q s z delta) =   
           limit simplifyRegExp (applyD delta v s z (sizeDfa dfa))
 
 applyD :: (Eq st, Num st)
@@ -109,5 +109,5 @@ applyD :: (Eq st, Num st)
        -> st
        -> RegExp sy
 
-applyD d v _ []     _   = Epsilon
+applyD d v _ []     _   = Empty 
 applyD d v i (z:zs) k   = (regular d v i z k) `Or` (applyD d v i zs k)
