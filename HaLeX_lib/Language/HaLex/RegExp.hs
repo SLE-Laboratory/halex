@@ -31,7 +31,7 @@ module Language.HaLex.RegExp (
               , showRE
               -- * Simplification
               , simplifyRegExp
-	      , simplifyRegExp'
+              , simplifyRegExp'
               -- * Normalization
               , extREtoRE
               ) where
@@ -39,6 +39,7 @@ module Language.HaLex.RegExp (
 import Data.Data (Data)
 import Data.Typeable (Typeable)
 
+import Language.HaLex.Util
 
 -----------------------------------------------------------------------------
 -- * Data type with recursion pattern
@@ -263,7 +264,7 @@ simplifyRegExp (RESet set) = RESet set
 
 simplifyRegExp' :: Eq sy
                 => RegExp sy       -- ^ Regular Expression
-		-> RegExp sy       -- ^ Simplified Regular Expression
+                -> RegExp sy       -- ^ Simplified Regular Expression
 simplifyRegExp' = limit simplifyRegExp 
 
 
