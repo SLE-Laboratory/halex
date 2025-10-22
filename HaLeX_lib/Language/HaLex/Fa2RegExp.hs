@@ -16,6 +16,7 @@
 -----------------------------------------------------------------------------
 
 module Language.HaLex.Fa2RegExp ( dfa2RegExp
+                                , dfa2RegExp'
                                 , regExpFromTo
                                 , ndfaregExpFromTo
                                 ) where
@@ -93,13 +94,24 @@ regular d v i j k  =  Or (Then (Then (regular d v i k (k-1))
                          (regular d v k j (k-1))) (regular d v i j (k-1))
 
 
--- | Compute a regular expression from a 'Dfa'.
 
---dfa2RegExp :: Eq sy
---           => Dfa Int sy            -- ^ Deterministic Automaton
---           -> RegExp sy             -- ^ Equivalent Regular Expression
-dfa2RegExp dfa@(Dfa v q s z delta) =   
-          limit simplifyRegExp (applyD delta v s z (sizeDfa dfa))
+
+-- | Compute a regular expression from a 'Dfa' and simplify it.
+
+dfa2RegExp' :: (Ord st, Ord sy)
+            => Dfa st sy          -- ^ Deterministic Automaton
+            -> RegExp sy          -- ^ Equivalent Regular Expression
+dfa2RegExp' dfa = let Dfa v q s z delta = beautifyDfa dfa
+                  in  simplifyRegExp' (applyD delta v s z (sizeDfa dfa))
+
+
+-- | Compute a regular expression from a 'Dfa' with integer as states.
+
+dfa2RegExp :: Eq sy
+           => Dfa Int sy            -- ^ Deterministic Automaton
+           -> RegExp sy             -- ^ Equivalent Regular Expression
+dfa2RegExp dfa@(Dfa v q s z delta) =   applyD delta v s z (sizeDfa dfa)
+--          limit simplifyRegExp (applyD delta v s z (sizeDfa dfa))
 
 applyD :: (Eq st, Num st)
        => (st -> sy -> st)

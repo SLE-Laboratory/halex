@@ -31,6 +31,7 @@ module Language.HaLex.RegExp (
               , showRE
               -- * Simplification
               , simplifyRegExp
+	      , simplifyRegExp'
               -- * Normalization
               , extREtoRE
               ) where
@@ -255,6 +256,15 @@ simplifyRegExp (OneOrMore x) = case x' of
 simplifyRegExp (Optional x) = Optional (simplifyRegExp x)
 
 simplifyRegExp (RESet set) = RESet set
+
+
+-- | Fix point of the function to Simplify regular expressions
+
+
+simplifyRegExp' :: Eq sy
+                => RegExp sy       -- ^ Regular Expression
+		-> RegExp sy       -- ^ Simplified Regular Expression
+simplifyRegExp' = limit simplifyRegExp 
 
 
 
