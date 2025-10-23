@@ -70,7 +70,7 @@ factor =  f <$> letterOrDigit
      k _ l _     = RESet (concat l)
      l _ _ l _   = RESet [ x | x <- ascii
                          , not (x `elem` l)
-			 ] 
+                         ] 
 
 range :: Parser Char [Char]
 range  =  f   <$> letterOrDigit <*> symbol '-' <*> letterOrDigit
@@ -91,6 +91,7 @@ setRegExp a b = foldr1 Or (map Literal [a..b])
 
 
 -- Ascii characteres (C Language)
+ascii :: [Char]
 ascii =  ['a'..'z']                             -- lower letter
       ++ ['A'..'Z']                             -- capital letters
       ++ [' ','\n','\t']                        -- Tab Or New line Or Space

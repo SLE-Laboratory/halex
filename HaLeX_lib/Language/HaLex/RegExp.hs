@@ -31,7 +31,7 @@ module Language.HaLex.RegExp (
               , showRE
               -- * Simplification
               , simplifyRegExp
-              , simplifyRegExp'
+              , simplifyRegExpFP
               -- * Normalization
               , extREtoRE
               ) where
@@ -262,10 +262,10 @@ simplifyRegExp (RESet set) = RESet set
 -- | Fix point of the function to Simplify regular expressions
 
 
-simplifyRegExp' :: Eq sy
-                => RegExp sy       -- ^ Regular Expression
-                -> RegExp sy       -- ^ Simplified Regular Expression
-simplifyRegExp' = limit simplifyRegExp 
+simplifyRegExpFP :: Eq sy
+                 => RegExp sy       -- ^ Regular Expression
+                 -> RegExp sy       -- ^ Simplified Regular Expression
+simplifyRegExpFP = limit simplifyRegExp 
 
 
 
