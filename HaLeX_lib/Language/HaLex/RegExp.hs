@@ -25,6 +25,8 @@ module Language.HaLex.RegExp (
               -- * Matching
               , matchesRE
               , matches
+              -- * Alphabet
+              , alphabet
               -- * Size
               , sizeRegExp
               -- * Printing
@@ -36,10 +38,12 @@ module Language.HaLex.RegExp (
               , extREtoRE
               ) where
 
+import Data.List
 import Data.Data (Data)
 import Data.Typeable (Typeable)
 
 import Language.HaLex.Util
+
 
 -----------------------------------------------------------------------------
 -- * Data type with recursion pattern
@@ -133,6 +137,19 @@ splits s = [ splitAt n s | n <- [ 0 .. length s ] ]
 
 frontSplits :: [a] -> [ ([a],[a]) ]
 frontSplits s = [ splitAt n s | n <- [ 1 .. length s ] ]
+
+
+
+-----------------------------------------------------------------------------
+-- * Alphabet
+-- | Compute the alphabet of a regular expression.
+--   We define the alphabet of a regular expression as the set of symbols 
+--   occurring in the expression
+
+alphabet :: Eq sy 
+         => RegExp sy      -- ^ Regular Expression
+         -> [sy]           -- ^ Alphabet
+alphabet = nub . cataRegExp ([],[],(++),id,\l -> [l],(++),id,id,id)
 
 
 -----------------------------------------------------------------------------

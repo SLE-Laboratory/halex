@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Language.HaLex.Fa2RegExp
--- Copyright   :  (c) João Saraiva 2001,2002,2003,2004,2005
+-- Copyright   :  (c) João Saraiva 2001,2002,2003,2004,2005,2025
 -- License     :  LGPL
 --
 -- Maintainer  :  jas@di.uminho.pt
@@ -20,7 +20,6 @@ module Language.HaLex.Fa2RegExp ( dfa2RegExp
                                 , regExpFromTo
                                 , ndfaregExpFromTo
                                 ) where
-
 
 import Data.List
 import Language.HaLex.Util
