@@ -142,6 +142,7 @@ frontSplits s = [ splitAt n s | n <- [ 1 .. length s ] ]
 
 -----------------------------------------------------------------------------
 -- * Alphabet
+
 -- | Compute the alphabet of a regular expression.
 --   We define the alphabet of a regular expression as the set of symbols 
 --   occurring in the expression
